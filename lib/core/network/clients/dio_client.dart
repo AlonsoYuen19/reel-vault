@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:reel_vault/core/network/interceptors/api_key_interceptor.dart';
+import 'package:reel_vault/core/network/interceptors/talker_logger.dart';
 import 'package:reel_vault/core/network/network_constants.dart';
-import 'package:reel_vault/core/network/talker_logger.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
 
 class DioClient {
@@ -25,14 +26,19 @@ class DioClient {
       ),
     );
 
+    // Logging interceptor (Talker)
     dio.interceptors.add(
       TalkerDioLogger(
         talker: TalkerLogger.instance,
         settings: const TalkerDioLoggerSettings(
           printRequestHeaders: true,
+          printResponseData: true,
+          printResponseMessage: true,
         ),
       ),
     );
+
+    dio.interceptors.add(ApiKeyInterceptor());
 
     return dio;
   }
