@@ -13,6 +13,8 @@ class DioClient {
     return _dio!;
   }
 
+  static Dio get dio => instance;
+
   static Dio _createDio() {
     final dio = Dio(
       BaseOptions(
