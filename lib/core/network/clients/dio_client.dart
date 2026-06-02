@@ -32,8 +32,6 @@ class DioClient {
         talker: TalkerLogger.instance,
         settings: const TalkerDioLoggerSettings(
           printRequestHeaders: true,
-          printResponseData: true,
-          printResponseMessage: true,
         ),
       ),
     );
