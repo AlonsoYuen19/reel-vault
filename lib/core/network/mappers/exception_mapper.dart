@@ -1,4 +1,3 @@
-import 'package:reel_vault/core/network/failures/failure.dart';
 import 'package:reel_vault/core/network/network.dart';
 
 class ExceptionMapper {

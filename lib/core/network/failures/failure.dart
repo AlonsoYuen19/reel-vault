@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'failure.freezed.dart';
 
 @freezed
-abstract class Failure with _$Failure {
+abstract class Failure with _$Failure implements Exception {
   const factory Failure.server({
     required String message,
     int? statusCode,
