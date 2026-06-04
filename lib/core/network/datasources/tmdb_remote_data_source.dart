@@ -6,11 +6,17 @@ class TmdbRemoteDataSource {
   final Dio _dio;
 
   Future<PopularMoviesResponseDto> getPopularMovies({int page = 1}) async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/movie/popular',
-      queryParameters: {'page': page},
-    );
-    final data = response.data ?? <String, dynamic>{};
-    return PopularMoviesResponseDto.fromJson(data);
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/movie/popular',
+        queryParameters: {'page': page},
+      );
+      final data = response.data ?? <String, dynamic>{};
+      return PopularMoviesResponseDto.fromJson(data);
+    } on DioException catch (error) {
+      throw AppException.fromDioException(error);
+    } catch (e) {
+      throw UnexpectedException(message: e.toString());
+    }
   }
 }
