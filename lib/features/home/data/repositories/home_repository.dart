@@ -12,10 +12,10 @@ class HomeRepository {
     try {
       final response = await _dataSource.getPopularMovies(page: page);
       return response.results;
-    } on AppException catch (e) {
-      throw Exception('Error cargando películas populares: ${e.message}');
+    } on AppException {
+      rethrow;
     } catch (e) {
-      throw Exception('Error inesperado: $e');
+      throw UnexpectedException(message: e.toString());
     }
   }
 }

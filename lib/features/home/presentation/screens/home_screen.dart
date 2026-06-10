@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reel_vault/core/network/exceptions/api_exception.dart';
 import 'package:reel_vault/features/home/presentation/viewmodels/home_view_model.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -31,29 +32,43 @@ class HomeScreen extends ConsumerWidget {
           },
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Error: $err'),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  await ref.read(homeViewModelProvider.notifier).loadPopularMovies();
-                },
-                child: const Text('Reintentar'),
+        error: (err, stack) {
+          if (err is AppException) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(err.message),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await ref.read(homeViewModelProvider.notifier).loadPopularMovies();
+                    },
+                    child: const Text('Reintentar'),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          // Ejemplo de "cargar más" (página 2)
-          await ref.read(homeViewModelProvider.notifier).loadPopularMovies(page: 2);
+            );
+          }
+          return Center(
+            child: Text('Error desconocido: $err'),
+          );
         },
-        label: const Text('Cargar más'),
-        icon: const Icon(Icons.add),
+      ),
+      floatingActionButton: state.maybeWhen(
+        data: (movies) {
+          // Si la lista está vacía, no mostramos el botón
+          if (movies.isEmpty) return null;
+
+          return FloatingActionButton.extended(
+            onPressed: () async {
+              await ref.read(homeViewModelProvider.notifier).loadPopularMovies(page: 2);
+            },
+            label: const Text('Cargar más'),
+            icon: const Icon(Icons.add),
+          );
+        },
+        orElse: () => null,
       ),
     );
   }
