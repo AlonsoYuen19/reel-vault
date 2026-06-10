@@ -1,18 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:reel_vault/core/network/network.dart';
+import 'package:reel_vault/features/home/data/models/popular_movies_response.dart';
 
 class TmdbRemoteDataSource {
   TmdbRemoteDataSource({Dio? dio}) : _dio = dio ?? DioClient.dio;
   final Dio _dio;
 
-  Future<PopularMoviesResponseDto> getPopularMovies({int page = 1}) async {
+  Future<PopularMoviesResponse> getPopularMovies({int page = 1}) async {
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         '/movie/popular',
         queryParameters: {'page': page},
       );
       final data = response.data ?? <String, dynamic>{};
-      return PopularMoviesResponseDto.fromJson(data);
+      return PopularMoviesResponse.fromJson(data);
     } on DioException catch (error) {
       throw AppException.fromDioException(error);
     } catch (e) {

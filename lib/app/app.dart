@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reel_vault/features/home/presentation/screens/home_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -12,7 +13,7 @@ class App extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: Container(),
+      home: const HomeScreen(),
     );
   }
 }

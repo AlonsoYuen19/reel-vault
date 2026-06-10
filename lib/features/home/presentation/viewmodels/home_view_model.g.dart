@@ -48,7 +48,7 @@ final class HomeRepositoryProvider
   }
 }
 
-String _$homeRepositoryHash() => r'0a08542f3cf9d0425f87a20b06020cdd03fa827f';
+String _$homeRepositoryHash() => r'a7ad35b71d152c2f2e026facffd4f91979e425ab';
 
 @ProviderFor(HomeViewModel)
 final homeViewModelProvider = HomeViewModelProvider._();
@@ -74,13 +74,13 @@ final class HomeViewModelProvider
   HomeViewModel create() => HomeViewModel();
 }
 
-String _$homeViewModelHash() => r'06800bc1c8b0ec039483bea67f448f76c3776e0d';
+String _$homeViewModelHash() => r'597b6d45032747c08e3498b258d8e2752d3c9977';
 
 abstract class _$HomeViewModel extends $AsyncNotifier<List<Movie>> {
   FutureOr<List<Movie>> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<Movie>>, List<Movie>>;
     final element =
         ref.element
@@ -90,6 +90,6 @@ abstract class _$HomeViewModel extends $AsyncNotifier<List<Movie>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }
