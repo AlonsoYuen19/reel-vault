@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reel_vault/core/theme/app_theme.dart';
 import 'package:reel_vault/features/home/presentation/screens/home_screen.dart';
 
 class App extends StatelessWidget {
@@ -7,12 +8,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.darkTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.dark,
       home: const HomeScreen(),
     );
   }
