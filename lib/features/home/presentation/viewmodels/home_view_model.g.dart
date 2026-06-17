@@ -54,7 +54,7 @@ String _$homeRepositoryHash() => r'a7ad35b71d152c2f2e026facffd4f91979e425ab';
 final homeViewModelProvider = HomeViewModelProvider._();
 
 final class HomeViewModelProvider
-    extends $AsyncNotifierProvider<HomeViewModel, List<Movie>> {
+    extends $NotifierProvider<HomeViewModel, HomeState> {
   HomeViewModelProvider._()
     : super(
         from: null,
@@ -72,21 +72,29 @@ final class HomeViewModelProvider
   @$internal
   @override
   HomeViewModel create() => HomeViewModel();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(HomeState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<HomeState>(value),
+    );
+  }
 }
 
-String _$homeViewModelHash() => r'597b6d45032747c08e3498b258d8e2752d3c9977';
+String _$homeViewModelHash() => r'f34bc375f6c19c8c9a58e474c450f622d4955d14';
 
-abstract class _$HomeViewModel extends $AsyncNotifier<List<Movie>> {
-  FutureOr<List<Movie>> build();
+abstract class _$HomeViewModel extends $Notifier<HomeState> {
+  HomeState build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<Movie>>, List<Movie>>;
+    final ref = this.ref as $Ref<HomeState, HomeState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Movie>>, List<Movie>>,
-              AsyncValue<List<Movie>>,
+              AnyNotifier<HomeState, HomeState>,
+              HomeState,
               Object?,
               Object?
             >;

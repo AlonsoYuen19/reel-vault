@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reel_vault/core/network/exceptions/api_exception.dart';
@@ -16,7 +18,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
-  bool _isFetchingMore = false;
 
   @override
   void initState() {
@@ -30,25 +31,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.dispose();
   }
 
-  Future<void> _onScroll() async {
-    final state = ref.read(homeViewModelProvider);
-    if (state.isLoading || _isFetchingMore) return;
-
+  void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 300) {
-      final movies = state.value;
-      if (movies == null || movies.isEmpty) return;
-
-      setState(() {
-        _isFetchingMore = true;
-      });
-
-      final nextPage = (movies.length ~/ 20) + 1;
-      await ref.read(homeViewModelProvider.notifier).loadPopularMovies(page: nextPage);
-      if (mounted) {
-        setState(() {
-          _isFetchingMore = false;
-        });
-      }
+      unawaited(ref.read(homeViewModelProvider.notifier).loadNextPage());
     }
   }
 
@@ -59,7 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () => ref.read(homeViewModelProvider.notifier).loadPopularMovies(),
+          onRefresh: () => ref.read(homeViewModelProvider.notifier).refresh(),
           color: AppColors.primary,
           backgroundColor: AppColors.cardBackground,
           child: CustomScrollView(
@@ -133,7 +118,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: state.when(
+                  child: state.movies.when(
                     data: (movies) => TrendingCarousel(movies: movies),
                     loading: () => const SizedBox(
                       height: 190,
@@ -151,7 +136,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: CategorySelector(
                     categories: const ['Todo', 'Acción', 'Drama', 'Comedia', 'Sci-Fi', 'Terror'],
                     onCategorySelected: (category) {
-                      // Lógica de filtro local se puede añadir aquí
+                      ref.read(homeViewModelProvider.notifier).selectCategory(category);
                     },
                   ),
                 ),
@@ -171,7 +156,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
 
               // Grid Content
-              state.when(
+              state.movies.when(
                 skipLoadingOnReload: true,
                 data: (movies) {
                   if (movies.isEmpty) {
@@ -247,7 +232,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
 
               // Bottom Loading Spacer for Pagination
-              if (_isFetchingMore)
+              if (state.isFetchingMore)
                 const SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 24),
