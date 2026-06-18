@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:reel_vault/features/home/presentation/screens/home_screen.dart';
+import 'package:reel_vault/features/movie_detail/presentation/screens/movie_detail_screen.dart';
 import 'package:reel_vault/features/navigation/presentation/screens/main_shell.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -22,6 +23,16 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/',
               builder: (context, state) => const HomeScreen(),
+              routes: [
+                GoRoute(
+                  path: 'movie/:id',
+                  builder: (context, state) {
+                    final idStr = state.pathParameters['id'] ?? '0';
+                    final id = int.tryParse(idStr) ?? 0;
+                    return MovieDetailScreen(movieId: id);
+                  },
+                ),
+              ],
             ),
           ],
         ),

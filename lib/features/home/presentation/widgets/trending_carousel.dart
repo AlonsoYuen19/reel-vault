@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:reel_vault/core/theme/app_colors.dart';
 import 'package:reel_vault/features/home/data/models/movie.dart';
 
@@ -68,101 +69,104 @@ class _TrendingCarouselState extends State<TrendingCarousel> {
               final movie = featuredMovies[index];
               final backdropUrl = movie.backdropPath != null ? 'https://image.tmdb.org/t/p/w780${movie.backdropPath}' : null;
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Stack(
-                    children: [
-                      // Backdrop Image
-                      Positioned.fill(
-                        child: backdropUrl != null
-                            ? Image.network(
-                                backdropUrl,
-                                fit: BoxFit.cover,
-                                loadingBuilder: (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return const ColoredBox(
+              return GestureDetector(
+                onTap: () => context.go('/movie/${movie.id}'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Stack(
+                      children: [
+                        // Backdrop Image
+                        Positioned.fill(
+                          child: backdropUrl != null
+                              ? Image.network(
+                                  backdropUrl,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return const ColoredBox(
+                                      color: AppColors.cardBackground,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) => const ColoredBox(
                                     color: AppColors.cardBackground,
                                     child: Center(
-                                      child: CircularProgressIndicator(
-                                        color: AppColors.primary,
+                                      child: Icon(
+                                        Icons.broken_image_outlined,
+                                        color: AppColors.textSecondary,
+                                        size: 48,
                                       ),
                                     ),
-                                  );
-                                },
-                                errorBuilder: (context, error, stackTrace) => const ColoredBox(
+                                  ),
+                                )
+                              : const ColoredBox(
                                   color: AppColors.cardBackground,
                                   child: Center(
                                     child: Icon(
-                                      Icons.broken_image_outlined,
+                                      Icons.movie_outlined,
                                       color: AppColors.textSecondary,
                                       size: 48,
                                     ),
                                   ),
                                 ),
-                              )
-                            : const ColoredBox(
-                                color: AppColors.cardBackground,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.movie_outlined,
-                                    color: AppColors.textSecondary,
-                                    size: 48,
-                                  ),
-                                ),
+                        ),
+                        // Bottom gradient overlay
+                        Positioned.fill(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withValues(alpha: 0.85),
+                                ],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
                               ),
-                      ),
-                      // Bottom gradient overlay
-                      Positioned.fill(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withValues(alpha: 0.85),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
                             ),
                           ),
                         ),
-                      ),
-                      // Movie Info Overlay
-                      Positioned(
-                        left: 16,
-                        bottom: 16,
-                        right: 16,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Title
-                            Text(
-                              movie.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                        // Movie Info Overlay
+                        Positioned(
+                          left: 16,
+                          bottom: 16,
+                          right: 16,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Title
+                              Text(
+                                movie.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            // Description or Release Date
-                            Text(
-                              movie.overview ?? 'Ver detalles',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 12,
+                              const SizedBox(height: 4),
+                              // Description or Release Date
+                              Text(
+                                movie.overview ?? 'Ver detalles',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
