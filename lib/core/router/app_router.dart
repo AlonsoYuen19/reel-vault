@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:reel_vault/features/home/presentation/screens/home_screen.dart';
 import 'package:reel_vault/features/movie_detail/presentation/screens/movie_detail_screen.dart';
 import 'package:reel_vault/features/navigation/presentation/screens/main_shell.dart';
+import 'package:reel_vault/features/search/presentation/screens/search_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
@@ -18,34 +19,21 @@ final GoRouter appRouter = GoRouter(
         );
       },
       branches: <StatefulShellBranch>[
+        // Rama 1: Inicio
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
               path: '/',
               builder: (context, state) => const HomeScreen(),
-              routes: [
-                GoRoute(
-                  path: 'movie/:id',
-                  builder: (context, state) {
-                    final idStr = state.pathParameters['id'] ?? '0';
-                    final id = int.tryParse(idStr) ?? 0;
-                    return MovieDetailScreen(movieId: id);
-                  },
-                ),
-              ],
             ),
           ],
         ),
-        // Rama 2: Buscar (Placeholder)
+        // Rama 2: Buscar
         StatefulShellBranch(
           routes: <RouteBase>[
             GoRoute(
               path: '/search',
-              builder: (context, state) => const Scaffold(
-                body: Center(
-                  child: Text('Buscar (Placeholder)'),
-                ),
-              ),
+              builder: (context, state) => const SearchScreen(),
             ),
           ],
         ),
@@ -76,6 +64,15 @@ final GoRouter appRouter = GoRouter(
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: '/movie/:id',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (context, state) {
+        final idStr = state.pathParameters['id'] ?? '0';
+        final id = int.tryParse(idStr) ?? 0;
+        return MovieDetailScreen(movieId: id);
+      },
     ),
   ],
 );
