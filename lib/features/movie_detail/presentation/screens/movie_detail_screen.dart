@@ -7,6 +7,7 @@ import 'package:reel_vault/features/home/data/models/movie.dart';
 import 'package:reel_vault/features/home/presentation/widgets/movie_card.dart';
 import 'package:reel_vault/features/movie_detail/data/models/cast.dart';
 import 'package:reel_vault/features/movie_detail/presentation/viewmodels/movie_detail_view_model.dart';
+import 'package:reel_vault/features/watchlist/presentation/viewmodels/watchlist_view_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -191,11 +192,32 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final mediaHeight = screenWidth * 9 / 16; // Mantiene la relación de aspecto 16:9
 
+    final watchlistState = ref.watch(watchlistViewModelProvider);
+    final isFavorite = watchlistState.maybeWhen(
+      data: (movies) => movies.any((m) => m.id == movie.id),
+      orElse: () => false,
+    );
+
     return SliverAppBar(
       automaticallyImplyLeading: false,
       expandedHeight: mediaHeight,
       pinned: true,
       backgroundColor: AppColors.background,
+      actions: [
+        IconButton(
+          icon: CircleAvatar(
+            backgroundColor: Colors.black38,
+            child: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? AppColors.primary : Colors.white,
+            ),
+          ),
+          onPressed: () {
+            unawaited(ref.read(watchlistViewModelProvider.notifier).toggleWatchlist(movie));
+          },
+        ),
+        const SizedBox(width: 8),
+      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
