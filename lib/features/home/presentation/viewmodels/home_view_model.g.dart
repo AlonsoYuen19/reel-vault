@@ -12,9 +12,7 @@ part of 'home_view_model.dart';
 @ProviderFor(homeRepository)
 final homeRepositoryProvider = HomeRepositoryProvider._();
 
-final class HomeRepositoryProvider
-    extends $FunctionalProvider<HomeRepository, HomeRepository, HomeRepository>
-    with $Provider<HomeRepository> {
+final class HomeRepositoryProvider extends $FunctionalProvider<HomeRepository, HomeRepository, HomeRepository> with $Provider<HomeRepository> {
   HomeRepositoryProvider._()
     : super(
         from: null,
@@ -31,8 +29,7 @@ final class HomeRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<HomeRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<HomeRepository> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   HomeRepository create(Ref ref) {
@@ -53,8 +50,7 @@ String _$homeRepositoryHash() => r'a7ad35b71d152c2f2e026facffd4f91979e425ab';
 @ProviderFor(HomeViewModel)
 final homeViewModelProvider = HomeViewModelProvider._();
 
-final class HomeViewModelProvider
-    extends $NotifierProvider<HomeViewModel, HomeState> {
+final class HomeViewModelProvider extends $NotifierProvider<HomeViewModel, HomeState> {
   HomeViewModelProvider._()
     : super(
         from: null,
@@ -90,14 +86,7 @@ abstract class _$HomeViewModel extends $Notifier<HomeState> {
   @override
   WhenComplete runBuild() {
     final ref = this.ref as $Ref<HomeState, HomeState>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<HomeState, HomeState>,
-              HomeState,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<HomeState, HomeState>, HomeState, Object?, Object?>;
     return element.handleCreate(ref, build);
   }
 }

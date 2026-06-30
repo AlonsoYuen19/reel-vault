@@ -1,6 +1,6 @@
 class NetworkConstants {
   static const String baseUrl = 'https://api.themoviedb.org/3';
-  
+
   // Carga la API Key de TMDb desde las variables de entorno al compilar.
   static const String apiKey = String.fromEnvironment('TMDB_API_KEY');
 

@@ -40,9 +40,15 @@ class MovieDetailViewModel extends _$MovieDetailViewModel {
 
     if (videosResult is AsyncData<List<Video>>) {
       final videos = videosResult.value;
-      final trailer = videos.firstWhere((video) => video.type.toLowerCase() == 'Trailer' && video.site.toLowerCase() == 'youtube', orElse: ()=> videos.firstWhere((video) => video.site.toLowerCase() == 'youtube', orElse: () => const Video(id: '', key: '', name: '', type: '', site: ''),));
-      
-      if(trailer.key.isNotEmpty){
+      final trailer = videos.firstWhere(
+        (video) => video.type.toLowerCase() == 'Trailer' && video.site.toLowerCase() == 'youtube',
+        orElse: () => videos.firstWhere(
+          (video) => video.site.toLowerCase() == 'youtube',
+          orElse: () => const Video(id: '', key: '', name: '', type: '', site: ''),
+        ),
+      );
+
+      if (trailer.key.isNotEmpty) {
         trailerKey = trailer.key;
       }
     }

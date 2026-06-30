@@ -31,11 +31,13 @@ class _TrendingCarouselState extends State<TrendingCarousel> {
       final featuredLength = widget.movies.take(5).length;
       if (featuredLength == 0) return;
       final nextPage = (_currentPage + 1) % featuredLength;
-      unawaited(_pageController.animateToPage(
-        nextPage,
-        duration: const Duration(milliseconds: 350),
-        curve: Curves.easeOut,
-      ));
+      unawaited(
+        _pageController.animateToPage(
+          nextPage,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOut,
+        ),
+      );
     });
   }
 

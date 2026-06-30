@@ -12,14 +12,7 @@ part of 'search_view_model.dart';
 @ProviderFor(searchRepository)
 final searchRepositoryProvider = SearchRepositoryProvider._();
 
-final class SearchRepositoryProvider
-    extends
-        $FunctionalProvider<
-          SearchRepository,
-          SearchRepository,
-          SearchRepository
-        >
-    with $Provider<SearchRepository> {
+final class SearchRepositoryProvider extends $FunctionalProvider<SearchRepository, SearchRepository, SearchRepository> with $Provider<SearchRepository> {
   SearchRepositoryProvider._()
     : super(
         from: null,
@@ -36,8 +29,7 @@ final class SearchRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<SearchRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<SearchRepository> $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
 
   @override
   SearchRepository create(Ref ref) {
@@ -58,8 +50,7 @@ String _$searchRepositoryHash() => r'fadfc43d38190fcb9c1251829db2e664efcf7f9a';
 @ProviderFor(SearchViewModel)
 final searchViewModelProvider = SearchViewModelProvider._();
 
-final class SearchViewModelProvider
-    extends $NotifierProvider<SearchViewModel, SearchState> {
+final class SearchViewModelProvider extends $NotifierProvider<SearchViewModel, SearchState> {
   SearchViewModelProvider._()
     : super(
         from: null,
@@ -95,14 +86,7 @@ abstract class _$SearchViewModel extends $Notifier<SearchState> {
   @override
   WhenComplete runBuild() {
     final ref = this.ref as $Ref<SearchState, SearchState>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<SearchState, SearchState>,
-              SearchState,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<SearchState, SearchState>, SearchState, Object?, Object?>;
     return element.handleCreate(ref, build);
   }
 }

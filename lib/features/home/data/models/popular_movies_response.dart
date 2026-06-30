@@ -12,8 +12,7 @@ class PopularMoviesResponse {
     required this.totalResults,
   });
 
-  factory PopularMoviesResponse.fromJson(Map<String, dynamic> json) =>
-      _$PopularMoviesResponseFromJson(json);
+  factory PopularMoviesResponse.fromJson(Map<String, dynamic> json) => _$PopularMoviesResponseFromJson(json);
 
   final int page;
   final List<Movie> results;
