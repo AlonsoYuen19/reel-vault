@@ -12,13 +12,7 @@ part of 'watchlist_view_model.dart';
 @ProviderFor(watchlistRepository)
 final watchlistRepositoryProvider = WatchlistRepositoryProvider._();
 
-final class WatchlistRepositoryProvider
-    extends
-        $FunctionalProvider<
-          WatchlistRepository,
-          WatchlistRepository,
-          WatchlistRepository
-        >
+final class WatchlistRepositoryProvider extends $FunctionalProvider<WatchlistRepository, WatchlistRepository, WatchlistRepository>
     with $Provider<WatchlistRepository> {
   WatchlistRepositoryProvider._()
     : super(
@@ -54,14 +48,12 @@ final class WatchlistRepositoryProvider
   }
 }
 
-String _$watchlistRepositoryHash() =>
-    r'f5ccf7e047a9e1e060196e751484267f775cd59d';
+String _$watchlistRepositoryHash() => r'f5ccf7e047a9e1e060196e751484267f775cd59d';
 
 @ProviderFor(WatchlistViewModel)
 final watchlistViewModelProvider = WatchlistViewModelProvider._();
 
-final class WatchlistViewModelProvider
-    extends $AsyncNotifierProvider<WatchlistViewModel, List<Movie>> {
+final class WatchlistViewModelProvider extends $AsyncNotifierProvider<WatchlistViewModel, List<Movie>> {
   WatchlistViewModelProvider._()
     : super(
         from: null,
@@ -81,8 +73,7 @@ final class WatchlistViewModelProvider
   WatchlistViewModel create() => WatchlistViewModel();
 }
 
-String _$watchlistViewModelHash() =>
-    r'0fde13ab2870b7399e351fd4879e953e2c880dbc';
+String _$watchlistViewModelHash() => r'0fde13ab2870b7399e351fd4879e953e2c880dbc';
 
 abstract class _$WatchlistViewModel extends $AsyncNotifier<List<Movie>> {
   FutureOr<List<Movie>> build();
@@ -90,14 +81,7 @@ abstract class _$WatchlistViewModel extends $AsyncNotifier<List<Movie>> {
   @override
   WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<List<Movie>>, List<Movie>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Movie>>, List<Movie>>,
-              AsyncValue<List<Movie>>,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<AsyncValue<List<Movie>>, List<Movie>>, AsyncValue<List<Movie>>, Object?, Object?>;
     return element.handleCreate(ref, build);
   }
 }

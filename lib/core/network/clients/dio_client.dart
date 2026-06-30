@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:reel_vault/core/network/interceptors/api_key_interceptor.dart';
 import 'package:reel_vault/core/network/interceptors/talker_logger.dart';
 import 'package:reel_vault/core/network/network_constants.dart';
@@ -27,14 +28,16 @@ class DioClient {
     );
 
     // Logging interceptor (Talker)
-    dio.interceptors.add(
-      TalkerDioLogger(
-        talker: TalkerLogger.instance,
-        settings: const TalkerDioLoggerSettings(
-          printRequestHeaders: true,
+    if (kDebugMode) {
+      dio.interceptors.add(
+        TalkerDioLogger(
+          talker: TalkerLogger.instance,
+          settings: const TalkerDioLoggerSettings(
+            printRequestHeaders: true,
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     dio.interceptors.add(ApiKeyInterceptor());
 

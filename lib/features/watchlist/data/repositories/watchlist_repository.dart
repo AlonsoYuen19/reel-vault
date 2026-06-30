@@ -2,8 +2,7 @@ import 'package:reel_vault/features/home/data/models/movie.dart';
 import 'package:reel_vault/features/watchlist/data/datasources/watchlist_local_data_source.dart';
 
 class WatchlistRepository {
-  WatchlistRepository({WatchlistLocalDataSource? localDataSource})
-      : _localDataSource = localDataSource ?? WatchlistLocalDataSource();
+  WatchlistRepository({WatchlistLocalDataSource? localDataSource}) : _localDataSource = localDataSource ?? WatchlistLocalDataSource();
 
   final WatchlistLocalDataSource _localDataSource;
 
