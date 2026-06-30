@@ -38,9 +38,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               _buildSearchBar(state, notifier),
               const SizedBox(height: 20),
               Expanded(
-                child: state.isSearchingAI
-                    ? _buildAISection(state, notifier)
-                    : _buildStandardSection(state, notifier),
+                child: state.isSearchingAI ? _buildAISection(state, notifier) : _buildStandardSection(state, notifier),
               ),
             ],
           ),
@@ -66,9 +64,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         }
       },
       decoration: InputDecoration(
-        hintText: state.isSearchingAI
-            ? 'Describe qué quieres ver (ej: ciencia ficción espacial)...'
-            : 'Buscar películas...',
+        hintText: state.isSearchingAI ? 'Describe qué quieres ver (ej: ciencia ficción espacial)...' : 'Buscar películas...',
         hintStyle: const TextStyle(color: AppColors.textSecondary),
         prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
         suffixIcon: IconButton(
@@ -212,9 +208,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             Text(
               'Asistente de Cine',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),

@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:reel_vault/features/home/data/models/movie.dart';
 
 part 'search_state.freezed.dart';
+
 @freezed
 abstract class SearchState with _$SearchState {
   const factory SearchState({
@@ -13,4 +14,4 @@ abstract class SearchState with _$SearchState {
     required List<Movie> aiRecommendations,
     @Default(false) bool isSearchingAI,
   }) = _SearchState;
-}
+}

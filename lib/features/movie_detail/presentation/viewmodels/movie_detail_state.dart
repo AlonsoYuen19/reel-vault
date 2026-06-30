@@ -13,4 +13,4 @@ abstract class MovieDetailState with _$MovieDetailState {
     required AsyncValue<List<Movie>> recommendations,
     String? trailerKey,
   }) = _MovieDetailState;
-}
+}

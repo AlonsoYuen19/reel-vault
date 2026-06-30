@@ -67,8 +67,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               Text(
                                 'Hola, Alonso 👋',
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(height: 4),
                               const Text(
@@ -149,8 +149,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   child: Text(
                     'Películas Populares',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

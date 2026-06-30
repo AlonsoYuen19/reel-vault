@@ -10,9 +10,7 @@ PopularMoviesResponse _$PopularMoviesResponseFromJson(
   Map<String, dynamic> json,
 ) => PopularMoviesResponse(
   page: (json['page'] as num).toInt(),
-  results: (json['results'] as List<dynamic>)
-      .map((e) => Movie.fromJson(e as Map<String, dynamic>))
-      .toList(),
+  results: (json['results'] as List<dynamic>).map((e) => Movie.fromJson(e as Map<String, dynamic>)).toList(),
   totalPages: (json['total_pages'] as num).toInt(),
   totalResults: (json['total_results'] as num).toInt(),
 );
