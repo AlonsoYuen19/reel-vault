@@ -1,83 +1,92 @@
 # Reel Vault
 
-![coverage][coverage_badge]
-[![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
-[![License: MIT][license_badge]][license_link]
+[![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Reel Vault es una aplicación de películas moderna desarrollada en Flutter.
+Reel Vault es una aplicación móvil de películas desarrollada en Flutter. Utiliza Riverpod para la gestión de estado e inyección de dependencias, Hive para la persistencia local de favoritos y la API de Gemini para la recomendación inteligente de contenido en base al lenguaje natural.
 
 ---
 
-## 📢 Transición de Arquitectura: MVVM por Features 🚀
+## Arquitectura del Proyecto
 
-> [!IMPORTANT]
-> A partir de este punto en el historial de Git, se ha decidido transicionar de una estructura de **Clean Architecture tradicional** a una arquitectura **MVVM (Model-View-ViewModel) organizada por Features (características)**.
+El código está organizado bajo una estructura MVVM (Model-View-ViewModel) por features. Esto mantiene los componentes de cada funcionalidad (datos, lógica de estado y vistas) agrupados y auto-contenidos, facilitando la escalabilidad del proyecto.
 
-Esta decisión tiene como objetivos:
-- **Reducir la sobrecarga (boilerplate):** Evitar la creación excesiva de capas intermedias (como casos de uso puros innecesarios) cuando un repositorio directamente puede proveer los datos al ViewModel.
-- **Mejorar la cohesión local:** Mantener todo lo relacionado con una funcionalidad (`data`, `presentation/viewmodels`, y `views`) agrupado dentro de una misma carpeta bajo `lib/features/`.
-- **Facilitar el mantenimiento:** Facilitar la navegación en el proyecto al tener código auto-contenido por característica.
-
-### Estructura de Carpetas Sugerida
-
-Bajo este enfoque MVVM por features, la estructura se organiza de la siguiente manera:
+### Estructura de carpetas:
 
 ```text
 lib/
-├── app/                  # Configuración global de la aplicación (MaterialApp)
-├── core/                 # Componentes transversales del sistema (compartidos)
-│   ├── constants/        # Constantes globales
-│   ├── network/          # Cliente HTTP (DioClient), excepciones globales
-│   ├── router/           # Configuración de navegación
-│   └── theme/            # Tema visual de la aplicación
-├── features/             # Características autónomas del negocio
-│   ├── home/             # Ejemplo: Feature de Inicio
-│   │   ├── data/         # Modelos (DTOs), fuentes de datos (DataSources) y Repositorios locales de la feature
-│   │   └── presentation/ # Vistas (Views), componentes visuales (Widgets) y ViewModels (Providers/Notifiers de Riverpod)
-│   ├── movie_detail/     # Feature de Detalle de Película
-│   ├── search/           # Feature de Búsqueda
-│   ├── tv_detail/        # Feature de Detalle de Series de TV
-│   └── watchlist/        # Feature de Lista de Seguimiento
-└── shared/               # Widgets o utilidades visuales reutilizables entre múltiples features
+├── app/                  # Configuración global de MaterialApp y router
+├── core/                 # Componentes compartidos transversales (red, tema, etc.)
+├── features/             # Módulos o características de la app
+│   ├── home/             # Vista principal, carrusel y listado por categorías
+│   ├── movie_detail/     # Detalle de película, reparto, recomendaciones y tráiler
+│   ├── navigation/       # Shell de navegación y navegación por pestañas (tabs)
+│   ├── search/           # Buscador interactivo e integración con Gemini
+│   └── watchlist/        # Persistencia local de favoritos con Hive
+└── shared/               # Widgets y utilidades comunes
 ```
 
 ---
 
-## Gestión de Estado: Riverpod 🌊
+## Funcionalidades Clave
 
-El proyecto utiliza **Riverpod** para la inyección de dependencias y la gestión del estado (actuando como el motor del ViewModel en el patrón MVVM).
+### 1. Pantalla de Inicio
+* Carrusel superior con películas destacadas del día.
+* Listas horizontales agrupadas por categorías.
 
-### Ejemplo de flujo MVVM con Riverpod:
-1. **Model**: Representa los datos (`Movie` y `MovieDto`).
-2. **ViewModel**: Un `Notifier` o `FutureProvider` de Riverpod que expone el estado y los métodos necesarios para la vista.
-3. **View**: Un `ConsumerWidget` que escucha el provider de Riverpod y repinta la interfaz cuando el estado cambia.
+### 2. Detalle de Película
+* Sinopsis, lista de actores principales y recomendaciones de películas similares.
+* **Tráiler**: Integración de reproductor de YouTube. Si un vídeo restringe la reproducción embebida (error `sameAsNotEmbeddable`), se muestra una opción alternativa para abrir el enlace en la aplicación oficial de YouTube o en el navegador mediante `url_launcher`.
+* **Botón de retroceso**: Ubicado de forma flotante para que permanezca visible y funcional incluso cuando se reproduce el vídeo nativo en pantalla.
+
+### 3. Búsqueda y Asistente de Cine
+* **Búsqueda**: Buscador en tiempo real con debounce de 500ms para controlar la tasa de peticiones a la API.
+* **Historial**: Historial local con las últimas 5 búsquedas realizadas.
+* **Recomendaciones con IA**: Integra el modelo `gemini-3.5-flash` para interpretar búsquedas del usuario en lenguaje natural y recomendar hasta 5 películas reales en paralelo utilizando TMDb.
+
+### 4. Lista de Favoritos (Watchlist)
+* Guarda las películas localmente en una caja de Hive (`watchlist_movies`).
+* Almacenamiento rápido en formato JSON String.
+* Sincronización instantánea entre la pantalla de detalles y la pestaña de favoritos mediante notifiers de Riverpod.
 
 ---
 
-## Comenzando 🚀
+## Configuración y Variables de Entorno
 
-### Ejecución
-Para iniciar el proyecto en modo de desarrollo:
+El buscador inteligente requiere acceso a la API de Gemini. 
+
+1. Copia el archivo de ejemplo para configurar tus variables locales:
+   ```sh
+   cp .env.example .env
+   ```
+2. Define tu API Key en el archivo `.env`:
+   ```env
+   GEMINI_API_KEY=tu_api_key_de_gemini
+   ```
+
+El proyecto inyecta estas variables utilizando la opción de compilación `--dart-define-from-file=.env`. Esto ya está preconfigurado en las configuraciones de ejecución de VS Code (`launch.json`).
+
+---
+
+## Comandos Útiles
+
+### Ejecutar la aplicación
+Para levantar la aplicación cargando las claves del entorno:
 
 ```sh
-flutter run
+flutter run --dart-define-from-file=.env
 ```
 
-### Ejecutar Pruebas Unitarias 🧪
-Para ejecutar la suite de pruebas unitarias:
+### Ejecutar pruebas
+Para correr la suite de pruebas unitarias:
 
 ```sh
 flutter test
 ```
 
-Para verificar que el formateo y las reglas del analizador estático estén correctas:
+### Análisis de código
+Para correr el analizador de código y verificar que cumpla con las reglas del linter del proyecto:
 
 ```sh
 flutter analyze
 ```
-
-[coverage_badge]: coverage_badge.svg
-[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license_link]: https://opensource.org/licenses/MIT
-[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
-[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
