@@ -104,7 +104,7 @@ class SearchViewModel extends _$SearchViewModel {
         '- "movie_ids": una lista de números enteros representando los IDs reales de TMDB para las películas recomendadas (máximo 5).',
       );
       final model = GenerativeModel(
-        model: 'gemini-1.5-flash',
+        model: 'gemini-2.0-flash',
         apiKey: apiKey,
         systemInstruction: systemInstruction,
       );
