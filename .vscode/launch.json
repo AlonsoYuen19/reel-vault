@@ -11,7 +11,8 @@
       "program": "lib/main.dart",
       "args": [
         "--flavor",
-        "development"
+        "development",
+        "--dart-define-from-file=.env"
       ]
     },
     {
@@ -21,7 +22,8 @@
       "program": "lib/main.dart",
       "args": [
         "--flavor",
-        "staging"
+        "staging",
+        "--dart-define-from-file=.env"
       ]
     },
     {
@@ -31,7 +33,8 @@
       "program": "lib/main.dart",
       "args": [
         "--flavor",
-        "production"
+        "production",
+        "--dart-define-from-file=.env"
       ]
     }
   ]
