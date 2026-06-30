@@ -7,6 +7,8 @@ import 'package:reel_vault/features/home/data/models/movie.dart';
 import 'package:reel_vault/features/home/presentation/widgets/movie_card.dart';
 import 'package:reel_vault/features/movie_detail/data/models/cast.dart';
 import 'package:reel_vault/features/movie_detail/presentation/viewmodels/movie_detail_view_model.dart';
+import 'package:reel_vault/features/watchlist/presentation/viewmodels/watchlist_view_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MovieDetailScreen extends ConsumerStatefulWidget {
@@ -54,6 +56,37 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
         showFullscreenButton: true,
       ),
     );
+    // Escuchador para registrar el estado y los errores del reproductor en consola
+    _youtubeController!.stream.listen((value) {
+      debugPrint('[YouTube Player Log] State: ${value.playerState}, Error: ${value.error}, VideoId: $videoId');
+    });
+  }
+
+  String _getFriendlyErrorText(YoutubeError error) {
+    switch (error) {
+      case YoutubeError.notEmbeddable:
+      case YoutubeError.sameAsNotEmbeddable:
+      case YoutubeError.sameAsNotEmbeddable2:
+        return 'El autor de este tráiler no permite que se reproduzca fuera de YouTube.';
+      case YoutubeError.videoNotFound:
+      case YoutubeError.cannotFindVideo:
+        return 'No se pudo encontrar el video o fue marcado como privado.';
+      case YoutubeError.invalidParam:
+        return 'El identificador del video de YouTube es inválido.';
+      case YoutubeError.html5Error:
+        return 'Ocurrió un error al cargar el reproductor HTML5.';
+      case YoutubeError.none:
+        return '';
+      case YoutubeError.unknown:
+        return 'No se pudo cargar el tráiler debido a restricciones de YouTube.';
+    }
+  }
+
+  Future<void> _openInYouTube(String videoId) async {
+    final url = Uri.parse('https://www.youtube.com/watch?v=$videoId');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
   }
 
   @override
@@ -62,78 +95,94 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: state.movie.when(
-        data: (movie) {
-          // Inicializamos el reproductor de YouTube si el trailer está disponible
-          if (state.trailerKey != null && _youtubeController == null) {
-            _initYoutubeController(state.trailerKey!);
-          }
+      body: Stack(
+        children: [
+          state.movie.when(
+            data: (movie) {
+              // Inicializamos el reproductor de YouTube si el trailer está disponible
+              if (state.trailerKey != null && _youtubeController == null) {
+                _initYoutubeController(state.trailerKey!);
+              }
 
-          return CustomScrollView(
-            slivers: [
-              _buildSliverAppBar(movie, state.trailerKey),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildMovieInfoSection(movie),
-                      const SizedBox(height: 24),
-                      _buildOverviewSection(movie),
-                      const SizedBox(height: 24),
-                      _buildCastSection(state.cast),
-                      const SizedBox(height: 24),
-                      _buildRecommendationsSection(state.recommendations),
-                      const SizedBox(height: 24),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
-        ),
-        error: (err, stack) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 64, color: AppColors.error),
-                const SizedBox(height: 16),
-                Text(
-                  'Error al cargar el detalle',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  err.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: AppColors.textSecondary),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    ref.invalidate(movieDetailViewModelProvider(widget.movieId));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+              return CustomScrollView(
+                slivers: [
+                  _buildSliverAppBar(movie, state.trailerKey),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildMovieInfoSection(movie),
+                          const SizedBox(height: 24),
+                          _buildOverviewSection(movie),
+                          const SizedBox(height: 24),
+                          _buildCastSection(state.cast),
+                          const SizedBox(height: 24),
+                          _buildRecommendationsSection(state.recommendations),
+                          const SizedBox(height: 24),
+                        ],
+                      ),
                     ),
                   ),
-                  child: const Text('Reintentar'),
+                ],
+              );
+            },
+            loading: () => const Center(
+              child: CircularProgressIndicator(color: AppColors.primary),
+            ),
+            error: (err, stack) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, size: 64, color: AppColors.error),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Error al cargar el detalle',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      err.toString(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: AppColors.textSecondary),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () {
+                        ref.invalidate(movieDetailViewModelProvider(widget.movieId));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text('Reintentar'),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+          // Botón de retroceso flotante permanente
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            left: 16,
+            child: IconButton(
+              icon: const CircleAvatar(
+                backgroundColor: Colors.black38,
+                child: Icon(Icons.arrow_back, color: Colors.white),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -143,17 +192,32 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final mediaHeight = screenWidth * 9 / 16; // Mantiene la relación de aspecto 16:9
 
+    final watchlistState = ref.watch(watchlistViewModelProvider);
+    final isFavorite = watchlistState.maybeWhen(
+      data: (movies) => movies.any((m) => m.id == movie.id),
+      orElse: () => false,
+    );
+
     return SliverAppBar(
+      automaticallyImplyLeading: false,
       expandedHeight: mediaHeight,
       pinned: true,
       backgroundColor: AppColors.background,
-      leading: IconButton(
-        icon: const CircleAvatar(
-          backgroundColor: Colors.black38,
-          child: Icon(Icons.arrow_back, color: Colors.white),
+      actions: [
+        IconButton(
+          icon: CircleAvatar(
+            backgroundColor: Colors.black38,
+            child: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? AppColors.primary : Colors.white,
+            ),
+          ),
+          onPressed: () {
+            unawaited(ref.read(watchlistViewModelProvider.notifier).toggleWatchlist(movie));
+          },
         ),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
+        const SizedBox(width: 8),
+      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
@@ -161,6 +225,77 @@ class _MovieDetailScreenState extends ConsumerState<MovieDetailScreen> {
             if (_playTrailer && _youtubeController != null)
               YoutubePlayer(
                 controller: _youtubeController!,
+                builder: (context, player, ctrl) {
+                  return StreamBuilder<YoutubePlayerValue>(
+                    stream: ctrl.stream,
+                    initialData: ctrl.value,
+                    builder: (context, snapshot) {
+                      final value = snapshot.data ?? ctrl.value;
+                      final hasError = value.hasError;
+                      final errorText = _getFriendlyErrorText(value.error);
+
+                      return Stack(
+                        children: [
+                          player,
+                          if (hasError && trailerKey != null)
+                            Positioned.fill(
+                              child: ColoredBox(
+                                color: Colors.black87,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.info_outline,
+                                        color: AppColors.error,
+                                        size: 40,
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        errorText,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ElevatedButton.icon(
+                                        onPressed: () => _openInYouTube(trailerKey),
+                                        icon: const Icon(Icons.open_in_new, size: 16),
+                                        label: const Text('Ver en YouTube'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.primary,
+                                          foregroundColor: Colors.black,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          // Botón de retroceso flotante permanente
+                          Positioned(
+                            top: MediaQuery.of(context).padding.top + 8,
+                            left: 16,
+                            child: IconButton(
+                              icon: const CircleAvatar(
+                                backgroundColor: Colors.black38,
+                                child: Icon(Icons.arrow_back, color: Colors.white),
+                              ),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               )
             else ...[
               if (backdropUrl != null)

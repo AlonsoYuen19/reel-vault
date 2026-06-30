@@ -13,8 +13,8 @@ class MovieCard extends StatelessWidget {
     final posterUrl = movie.posterPath != null ? 'https://image.tmdb.org/t/p/w342${movie.posterPath}' : null;
 
     return GestureDetector(
-      onTap: () {
-        context.go('/movie/${movie.id}');
+      onTap: () async {
+        await context.push('/movie/${movie.id}');
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

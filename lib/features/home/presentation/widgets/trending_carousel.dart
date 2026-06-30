@@ -70,7 +70,7 @@ class _TrendingCarouselState extends State<TrendingCarousel> {
               final backdropUrl = movie.backdropPath != null ? 'https://image.tmdb.org/t/p/w780${movie.backdropPath}' : null;
 
               return GestureDetector(
-                onTap: () => context.go('/movie/${movie.id}'),
+                onTap: () => context.push('/movie/${movie.id}'),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6),
                   child: ClipRRect(
