@@ -1,8 +1,5 @@
 # Reel Vault
 
-[![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
 Reel Vault es una aplicación móvil de películas desarrollada en Flutter. Utiliza Riverpod para la gestión de estado e inyección de dependencias, Hive para la persistencia local de favoritos y la API de Gemini para la recomendación inteligente de contenido en base al lenguaje natural.
 
 ---
