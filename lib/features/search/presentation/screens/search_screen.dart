@@ -364,29 +364,32 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           data: Theme.of(context).copyWith(
                             dividerColor: Colors.transparent,
                           ),
-                          child: ExpansionTile(
-                            title: const Text(
-                              'Detalles técnicos',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.textSecondary,
-                                fontSize: 11,
-                              ),
-                            ),
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8),
-                                child: Text(
-                                  errStr,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 10,
-                                    fontFamily: 'monospace',
-                                  ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: ExpansionTile(
+                              title: const Text(
+                                'Detalles técnicos',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 11,
                                 ),
                               ),
-                            ],
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8),
+                                  child: Text(
+                                    errStr,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: AppColors.textSecondary,
+                                      fontSize: 10,
+                                      fontFamily: 'monospace',
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

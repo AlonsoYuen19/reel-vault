@@ -64,12 +64,12 @@ android {
         create("staging") {
             dimension = "default"
             applicationIdSuffix = ".stg"
-            manifestPlaceholders["appName"] = "[STG] Reel Vault"
+            manifestPlaceholders["appName"] = "Reel Vault"
         }
         create("development") {
             dimension = "default"
             applicationIdSuffix = ".dev"
-            manifestPlaceholders["appName"] = "[DEV] Reel Vault"
+            manifestPlaceholders["appName"] = "Reel Vault"
         }
     }
 
