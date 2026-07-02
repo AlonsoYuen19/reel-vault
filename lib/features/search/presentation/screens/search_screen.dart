@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reel_vault/core/theme/app_colors.dart';
+import 'package:reel_vault/features/anime/presentation/widgets/anime_card.dart';
 import 'package:reel_vault/features/home/presentation/widgets/movie_card.dart';
 import 'package:reel_vault/features/search/presentation/viewmodels/search_state.dart';
 import 'package:reel_vault/features/search/presentation/viewmodels/search_view_model.dart';
@@ -25,7 +26,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(searchViewModelProvider);
     final notifier = ref.read(searchViewModelProvider.notifier);
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -36,6 +36,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             children: [
               const SizedBox(height: 16),
               _buildSearchBar(state, notifier),
+              if (!state.isSearchingAI) ...[
+                const SizedBox(height: 12),
+                _buildSearchTypeSelector(state, notifier),
+              ],
               const SizedBox(height: 20),
               Expanded(
                 child: state.isSearchingAI ? _buildAISection(state, notifier) : _buildStandardSection(state, notifier),
@@ -43,6 +47,42 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSearchTypeSelector(SearchState state, SearchViewModel notifier) {
+    return SizedBox(
+      width: double.infinity,
+      child: SegmentedButton<SearchType>(
+        segments: const <ButtonSegment<SearchType>>[
+          ButtonSegment<SearchType>(
+            value: SearchType.movies,
+            label: Text('Películas'),
+            icon: Icon(Icons.movie_outlined),
+          ),
+          ButtonSegment<SearchType>(
+            value: SearchType.anime,
+            label: Text('Animes'),
+            icon: Icon(Icons.animation),
+          ),
+        ],
+        selected: <SearchType>{state.searchType},
+        onSelectionChanged: (newSelection) {
+          _searchController.clear();
+          notifier.setSearchType(newSelection.first);
+        },
+        style: SegmentedButton.styleFrom(
+          selectedBackgroundColor: AppColors.primary,
+          selectedForegroundColor: Colors.black,
+          foregroundColor: AppColors.textSecondary,
+          backgroundColor: AppColors.cardBackground,
+          side: BorderSide.none,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        showSelectedIcon: false,
       ),
     );
   }
@@ -64,7 +104,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         }
       },
       decoration: InputDecoration(
-        hintText: state.isSearchingAI ? 'Describe qué quieres ver (ej: ciencia ficción espacial)...' : 'Buscar películas...',
+        hintText: state.isSearchingAI
+            ? 'Describe qué quieres ver (ej: ciencia ficción espacial)...'
+            : (state.searchType == SearchType.anime ? 'Buscar anime...' : 'Buscar películas...'),
         hintStyle: const TextStyle(color: AppColors.textSecondary),
         prefixIcon: const Icon(Icons.search, color: AppColors.textSecondary),
         suffixIcon: IconButton(
@@ -93,6 +135,42 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return _buildHistorySection(state, notifier);
     }
 
+    if (state.searchType == SearchType.anime) {
+      return state.animeResults.when(
+        data: (animes) {
+          if (animes.isEmpty) {
+            return const Center(
+              child: Text(
+                'No se encontraron animes.',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+              ),
+            );
+          }
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.68,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+            ),
+            itemCount: animes.length,
+            itemBuilder: (context, index) {
+              final anime = animes[index];
+              return AnimeCard(anime: anime);
+            },
+          );
+        },
+        loading: () => const Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+        error: (err, stack) => Center(
+          child: Text(
+            'Error al buscar: $err',
+            style: const TextStyle(color: AppColors.error),
+          ),
+        ),
+      );
+    }
     return state.results.when(
       data: (movies) {
         if (movies.isEmpty) {
