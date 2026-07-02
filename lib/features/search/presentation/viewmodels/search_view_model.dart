@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:reel_vault/features/anime/data/repositories/anime_repository.dart';
 import 'package:reel_vault/features/home/data/models/movie.dart';
 import 'package:reel_vault/features/movie_detail/presentation/viewmodels/movie_detail_view_model.dart';
 import 'package:reel_vault/features/search/data/repositories/search_repository.dart';
@@ -13,6 +14,11 @@ part 'search_view_model.g.dart';
 @riverpod
 SearchRepository searchRepository(Ref ref) {
   return SearchRepository();
+}
+
+@riverpod
+AnimeRepository animeRepository(Ref ref) {
+  return AnimeRepository();
 }
 
 @riverpod
@@ -38,9 +44,14 @@ class SearchViewModel extends _$SearchViewModel {
       isSearchingAI: !state.isSearchingAI,
       query: '',
       results: const AsyncValue.data([]),
+      animeResults: const AsyncValue.data([]),
       aiResponse: const AsyncValue.data(null),
       aiRecommendations: [],
     );
+  }
+
+  void setSearchType(SearchType type) {
+    state = state.copyWith(searchType: type, query: '', results: const AsyncValue.data([]), animeResults: const AsyncValue.data([]));
   }
 
   void setSearchQuery(String query) {
@@ -48,19 +59,32 @@ class SearchViewModel extends _$SearchViewModel {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
       if (query.trim().isEmpty) {
-        state = state.copyWith(results: const AsyncValue.data([]));
+        state = state.copyWith(results: const AsyncValue.data([]), animeResults: const AsyncValue.data([]));
         return;
       }
-      state = state.copyWith(
-        results: const AsyncValue.loading(),
-      );
 
-      try {
-        final repo = ref.read(searchRepositoryProvider);
-        final results = await repo.searchMovies(query);
-        state = state.copyWith(results: AsyncValue.data(results));
-      } on Object catch (err, stack) {
-        state = state.copyWith(results: AsyncValue.error(err, stack));
+      if (state.searchType == SearchType.anime) {
+        state = state.copyWith(
+          animeResults: const AsyncValue.loading(),
+        );
+        try {
+          final repo = ref.read(animeRepositoryProvider);
+          final results = await repo.searchAnime(query);
+          state = state.copyWith(animeResults: AsyncValue.data(results));
+        } on Object catch (err, stack) {
+          state = state.copyWith(animeResults: AsyncValue.error(err, stack));
+        }
+      } else {
+        state = state.copyWith(
+          results: const AsyncValue.loading(),
+        );
+        try {
+          final repo = ref.read(searchRepositoryProvider);
+          final results = await repo.searchMovies(query);
+          state = state.copyWith(results: AsyncValue.data(results));
+        } on Object catch (err, stack) {
+          state = state.copyWith(results: AsyncValue.error(err, stack));
+        }
       }
     });
   }

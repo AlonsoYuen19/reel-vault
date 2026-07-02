@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SearchState {
 
- String get query; AsyncValue<List<Movie>> get results; List<String> get searchHistory; AsyncValue<String?> get aiResponse; List<Movie> get aiRecommendations; bool get isSearchingAI;
+ String get query; AsyncValue<List<Movie>> get results; List<String> get searchHistory; AsyncValue<String?> get aiResponse; List<Movie> get aiRecommendations; bool get isSearchingAI; SearchType get searchType; AsyncValue<List<Anime>> get animeResults;
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $SearchStateCopyWith<SearchState> get copyWith => _$SearchStateCopyWithImpl<Sear
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.results, results) || other.results == results)&&const DeepCollectionEquality().equals(other.searchHistory, searchHistory)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&const DeepCollectionEquality().equals(other.aiRecommendations, aiRecommendations)&&(identical(other.isSearchingAI, isSearchingAI) || other.isSearchingAI == isSearchingAI));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.results, results) || other.results == results)&&const DeepCollectionEquality().equals(other.searchHistory, searchHistory)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&const DeepCollectionEquality().equals(other.aiRecommendations, aiRecommendations)&&(identical(other.isSearchingAI, isSearchingAI) || other.isSearchingAI == isSearchingAI)&&(identical(other.searchType, searchType) || other.searchType == searchType)&&(identical(other.animeResults, animeResults) || other.animeResults == animeResults));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,results,const DeepCollectionEquality().hash(searchHistory),aiResponse,const DeepCollectionEquality().hash(aiRecommendations),isSearchingAI);
+int get hashCode => Object.hash(runtimeType,query,results,const DeepCollectionEquality().hash(searchHistory),aiResponse,const DeepCollectionEquality().hash(aiRecommendations),isSearchingAI,searchType,animeResults);
 
 @override
 String toString() {
-  return 'SearchState(query: $query, results: $results, searchHistory: $searchHistory, aiResponse: $aiResponse, aiRecommendations: $aiRecommendations, isSearchingAI: $isSearchingAI)';
+  return 'SearchState(query: $query, results: $results, searchHistory: $searchHistory, aiResponse: $aiResponse, aiRecommendations: $aiRecommendations, isSearchingAI: $isSearchingAI, searchType: $searchType, animeResults: $animeResults)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $SearchStateCopyWith<$Res>  {
   factory $SearchStateCopyWith(SearchState value, $Res Function(SearchState) _then) = _$SearchStateCopyWithImpl;
 @useResult
 $Res call({
- String query, AsyncValue<List<Movie>> results, List<String> searchHistory, AsyncValue<String?> aiResponse, List<Movie> aiRecommendations, bool isSearchingAI
+ String query, AsyncValue<List<Movie>> results, List<String> searchHistory, AsyncValue<String?> aiResponse, List<Movie> aiRecommendations, bool isSearchingAI, SearchType searchType, AsyncValue<List<Anime>> animeResults
 });
 
 
@@ -62,7 +62,7 @@ class _$SearchStateCopyWithImpl<$Res>
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? results = null,Object? searchHistory = null,Object? aiResponse = null,Object? aiRecommendations = null,Object? isSearchingAI = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? results = null,Object? searchHistory = null,Object? aiResponse = null,Object? aiRecommendations = null,Object? isSearchingAI = null,Object? searchType = null,Object? animeResults = null,}) {
   return _then(_self.copyWith(
 query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,results: null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
@@ -70,7 +70,9 @@ as AsyncValue<List<Movie>>,searchHistory: null == searchHistory ? _self.searchHi
 as List<String>,aiResponse: null == aiResponse ? _self.aiResponse : aiResponse // ignore: cast_nullable_to_non_nullable
 as AsyncValue<String?>,aiRecommendations: null == aiRecommendations ? _self.aiRecommendations : aiRecommendations // ignore: cast_nullable_to_non_nullable
 as List<Movie>,isSearchingAI: null == isSearchingAI ? _self.isSearchingAI : isSearchingAI // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,searchType: null == searchType ? _self.searchType : searchType // ignore: cast_nullable_to_non_nullable
+as SearchType,animeResults: null == animeResults ? _self.animeResults : animeResults // ignore: cast_nullable_to_non_nullable
+as AsyncValue<List<Anime>>,
   ));
 }
 
@@ -155,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  AsyncValue<List<Movie>> results,  List<String> searchHistory,  AsyncValue<String?> aiResponse,  List<Movie> aiRecommendations,  bool isSearchingAI)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String query,  AsyncValue<List<Movie>> results,  List<String> searchHistory,  AsyncValue<String?> aiResponse,  List<Movie> aiRecommendations,  bool isSearchingAI,  SearchType searchType,  AsyncValue<List<Anime>> animeResults)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
-return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_that.aiRecommendations,_that.isSearchingAI);case _:
+return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_that.aiRecommendations,_that.isSearchingAI,_that.searchType,_that.animeResults);case _:
   return orElse();
 
 }
@@ -176,10 +178,10 @@ return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  AsyncValue<List<Movie>> results,  List<String> searchHistory,  AsyncValue<String?> aiResponse,  List<Movie> aiRecommendations,  bool isSearchingAI)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String query,  AsyncValue<List<Movie>> results,  List<String> searchHistory,  AsyncValue<String?> aiResponse,  List<Movie> aiRecommendations,  bool isSearchingAI,  SearchType searchType,  AsyncValue<List<Anime>> animeResults)  $default,) {final _that = this;
 switch (_that) {
 case _SearchState():
-return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_that.aiRecommendations,_that.isSearchingAI);case _:
+return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_that.aiRecommendations,_that.isSearchingAI,_that.searchType,_that.animeResults);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +198,10 @@ return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  AsyncValue<List<Movie>> results,  List<String> searchHistory,  AsyncValue<String?> aiResponse,  List<Movie> aiRecommendations,  bool isSearchingAI)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String query,  AsyncValue<List<Movie>> results,  List<String> searchHistory,  AsyncValue<String?> aiResponse,  List<Movie> aiRecommendations,  bool isSearchingAI,  SearchType searchType,  AsyncValue<List<Anime>> animeResults)?  $default,) {final _that = this;
 switch (_that) {
 case _SearchState() when $default != null:
-return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_that.aiRecommendations,_that.isSearchingAI);case _:
+return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_that.aiRecommendations,_that.isSearchingAI,_that.searchType,_that.animeResults);case _:
   return null;
 
 }
@@ -211,7 +213,7 @@ return $default(_that.query,_that.results,_that.searchHistory,_that.aiResponse,_
 
 
 class _SearchState implements SearchState {
-  const _SearchState({required this.query, required this.results, required final  List<String> searchHistory, required this.aiResponse, required final  List<Movie> aiRecommendations, this.isSearchingAI = false}): _searchHistory = searchHistory,_aiRecommendations = aiRecommendations;
+  const _SearchState({required this.query, required this.results, required final  List<String> searchHistory, required this.aiResponse, required final  List<Movie> aiRecommendations, this.isSearchingAI = false, this.searchType = SearchType.movies, this.animeResults = const AsyncValue.data(<Anime>[])}): _searchHistory = searchHistory,_aiRecommendations = aiRecommendations;
   
 
 @override final  String query;
@@ -232,6 +234,8 @@ class _SearchState implements SearchState {
 }
 
 @override@JsonKey() final  bool isSearchingAI;
+@override@JsonKey() final  SearchType searchType;
+@override@JsonKey() final  AsyncValue<List<Anime>> animeResults;
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +247,16 @@ _$SearchStateCopyWith<_SearchState> get copyWith => __$SearchStateCopyWithImpl<_
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.results, results) || other.results == results)&&const DeepCollectionEquality().equals(other._searchHistory, _searchHistory)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&const DeepCollectionEquality().equals(other._aiRecommendations, _aiRecommendations)&&(identical(other.isSearchingAI, isSearchingAI) || other.isSearchingAI == isSearchingAI));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SearchState&&(identical(other.query, query) || other.query == query)&&(identical(other.results, results) || other.results == results)&&const DeepCollectionEquality().equals(other._searchHistory, _searchHistory)&&(identical(other.aiResponse, aiResponse) || other.aiResponse == aiResponse)&&const DeepCollectionEquality().equals(other._aiRecommendations, _aiRecommendations)&&(identical(other.isSearchingAI, isSearchingAI) || other.isSearchingAI == isSearchingAI)&&(identical(other.searchType, searchType) || other.searchType == searchType)&&(identical(other.animeResults, animeResults) || other.animeResults == animeResults));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query,results,const DeepCollectionEquality().hash(_searchHistory),aiResponse,const DeepCollectionEquality().hash(_aiRecommendations),isSearchingAI);
+int get hashCode => Object.hash(runtimeType,query,results,const DeepCollectionEquality().hash(_searchHistory),aiResponse,const DeepCollectionEquality().hash(_aiRecommendations),isSearchingAI,searchType,animeResults);
 
 @override
 String toString() {
-  return 'SearchState(query: $query, results: $results, searchHistory: $searchHistory, aiResponse: $aiResponse, aiRecommendations: $aiRecommendations, isSearchingAI: $isSearchingAI)';
+  return 'SearchState(query: $query, results: $results, searchHistory: $searchHistory, aiResponse: $aiResponse, aiRecommendations: $aiRecommendations, isSearchingAI: $isSearchingAI, searchType: $searchType, animeResults: $animeResults)';
 }
 
 
@@ -263,7 +267,7 @@ abstract mixin class _$SearchStateCopyWith<$Res> implements $SearchStateCopyWith
   factory _$SearchStateCopyWith(_SearchState value, $Res Function(_SearchState) _then) = __$SearchStateCopyWithImpl;
 @override @useResult
 $Res call({
- String query, AsyncValue<List<Movie>> results, List<String> searchHistory, AsyncValue<String?> aiResponse, List<Movie> aiRecommendations, bool isSearchingAI
+ String query, AsyncValue<List<Movie>> results, List<String> searchHistory, AsyncValue<String?> aiResponse, List<Movie> aiRecommendations, bool isSearchingAI, SearchType searchType, AsyncValue<List<Anime>> animeResults
 });
 
 
@@ -280,7 +284,7 @@ class __$SearchStateCopyWithImpl<$Res>
 
 /// Create a copy of SearchState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? query = null,Object? results = null,Object? searchHistory = null,Object? aiResponse = null,Object? aiRecommendations = null,Object? isSearchingAI = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? query = null,Object? results = null,Object? searchHistory = null,Object? aiResponse = null,Object? aiRecommendations = null,Object? isSearchingAI = null,Object? searchType = null,Object? animeResults = null,}) {
   return _then(_SearchState(
 query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,results: null == results ? _self.results : results // ignore: cast_nullable_to_non_nullable
@@ -288,7 +292,9 @@ as AsyncValue<List<Movie>>,searchHistory: null == searchHistory ? _self._searchH
 as List<String>,aiResponse: null == aiResponse ? _self.aiResponse : aiResponse // ignore: cast_nullable_to_non_nullable
 as AsyncValue<String?>,aiRecommendations: null == aiRecommendations ? _self._aiRecommendations : aiRecommendations // ignore: cast_nullable_to_non_nullable
 as List<Movie>,isSearchingAI: null == isSearchingAI ? _self.isSearchingAI : isSearchingAI // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,searchType: null == searchType ? _self.searchType : searchType // ignore: cast_nullable_to_non_nullable
+as SearchType,animeResults: null == animeResults ? _self.animeResults : animeResults // ignore: cast_nullable_to_non_nullable
+as AsyncValue<List<Anime>>,
   ));
 }
 
