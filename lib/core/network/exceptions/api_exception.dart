@@ -23,8 +23,6 @@ abstract class AppException implements Exception {
         return const ServerException(message: 'Request cancelled');
       case DioExceptionType.connectionError:
         return const NetworkException(message: 'Connection error');
-      case DioExceptionType.transformTimeout:
-        return const TimeoutException(message: 'Transforma timeout');
       case DioExceptionType.unknown:
         return const UnexpectedException(message: 'Unexpected error');
     }

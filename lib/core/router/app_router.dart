@@ -4,13 +4,14 @@ import 'package:reel_vault/features/home/presentation/screens/home_screen.dart';
 import 'package:reel_vault/features/movie_detail/presentation/screens/movie_detail_screen.dart';
 import 'package:reel_vault/features/navigation/presentation/screens/main_shell.dart';
 import 'package:reel_vault/features/search/presentation/screens/search_screen.dart';
+import 'package:reel_vault/features/splash/presentation/screens/splash_screen.dart';
 import 'package:reel_vault/features/watchlist/presentation/screens/watchlist_screen.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 
 final GoRouter appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/',
+  initialLocation: '/splash',
 
   routes: <RouteBase>[
     StatefulShellRoute.indexedStack(
@@ -70,6 +71,11 @@ final GoRouter appRouter = GoRouter(
         final id = int.tryParse(idStr) ?? 0;
         return MovieDetailScreen(movieId: id);
       },
+    ),
+    GoRoute(
+      path: '/splash',
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (_, _) => const SplashScreen(),
     ),
   ],
 );
